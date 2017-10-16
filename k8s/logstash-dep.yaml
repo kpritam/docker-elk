@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: logstash
+  name: logstash
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        io.kompose.service: logstash
+    spec:
+      containers:
+      - env:
+        - name: LS_JAVA_OPTS
+          value: -Xmx256m -Xms256m
+        image: docker.elastic.co/logstash/logstash:5.6.3
+        name: logstash
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - mountPath: /usr/share/logstash/config
+          name: logstash-claim0
+        - mountPath: /usr/share/logstash/pipeline
+          name: logstash-claim1
+      volumes:
+      - name: logstash-claim0
+        hostPath:
+            path: /Users/pritamkadam/TMT/elk/docker-elk/k8s/logstash/config/
+      - name: logstash-claim1
+        hostPath:
+            path: /Users/pritamkadam/TMT/elk/docker-elk/k8s/logstash/pipeline/
