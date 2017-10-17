@@ -2,14 +2,14 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    io.kompose.service: elasticsearch
+    role: elasticsearch
   name: elasticsearch
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        io.kompose.service: elasticsearch
+        role: elasticsearch
     spec:
       initContainers:
       - name: init-sysctl

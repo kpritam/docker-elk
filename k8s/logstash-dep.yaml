@@ -2,17 +2,21 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    io.kompose.service: logstash
+    role: logstash
   name: logstash
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        io.kompose.service: logstash
+        role: logstash
     spec:
       containers:
-      - env:
+      - image: docker.elastic.co/logstash/logstash:5.6.3
+        name: logstash
+        command: ["/bin/bash"]
+        args: ["-c", "logstash-plugin install logstash-input-beats && logstash-plugin install logstash-filter-json && logstash-plugin install logstash-filter-kv"]
+        env:
         - name: PATH_CONFIG
           value: "/usr/share/logstash/pipeline"
         - name: HTTP_HOST
@@ -21,8 +25,6 @@ spec:
           value: "false"
         - name: LS_JAVA_OPTS
           value: -Xmx256m -Xms256m
-        image: docker.elastic.co/logstash/logstash:5.6.3
-        name: logstash
         ports:
         - containerPort: 5000
         volumeMounts:
