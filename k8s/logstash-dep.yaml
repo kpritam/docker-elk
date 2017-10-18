@@ -12,10 +12,8 @@ spec:
         role: logstash
     spec:
       containers:
-      - image: docker.elastic.co/logstash/logstash:5.6.3
-        name: logstash
-        command: ["/bin/bash"]
-        args: ["-c", "logstash-plugin install logstash-input-beats && logstash-plugin install logstash-filter-json && logstash-plugin install logstash-filter-kv"]
+      - name: logstash
+        image: docker.elastic.co/logstash/logstash:5.6.3
         env:
         - name: PATH_CONFIG
           value: "/usr/share/logstash/pipeline"
@@ -28,9 +26,9 @@ spec:
         ports:
         - containerPort: 5000
         volumeMounts:
-        - mountPath: /usr/share/logstash/pipeline
-          name: pipeline
+        - name: config-volume
+          mountPath: /usr/share/logstash/pipeline
       volumes:
-      - name: pipeline
-        hostPath:
-            path: /Users/pritamkadam/TMT/elk/docker-elk/k8s/logstash/pipeline/
+        - name: config-volume
+          configMap:
+            name: logstash-config
